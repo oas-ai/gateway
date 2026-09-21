@@ -1,0 +1,12 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  firmware:
+    uses: oas-ai/.github/.github/workflows/cpp-ci.yml@main
+    with:
+      source-directory: firmware
