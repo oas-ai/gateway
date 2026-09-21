@@ -6,6 +6,8 @@ on:
 permissions:
   contents: read
 jobs:
+  license:
+    uses: oas-ai/.github/.github/workflows/license-check.yml@main
   firmware:
     uses: oas-ai/.github/.github/workflows/cpp-ci.yml@main
     with:
