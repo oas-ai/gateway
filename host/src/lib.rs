@@ -6,7 +6,9 @@ use oas_can::decode::{DecodeContext, FrameDecoder};
 use oas_can::frame::CanFrame;
 use oas_car::adapter::ManufacturerAdapter;
 use oas_car::vehicle_state::VehicleState;
+use prost::Message;
 
+pub mod protobuf;
 #[cfg(target_os = "linux")]
 pub mod socketcan;
 
@@ -48,6 +50,17 @@ where
 
         self.adapter.apply(&message).map_err(GatewayError::Adapt)?;
         Ok(Some(self.adapter.vehicle_state().clone()))
+    }
+
+    /// 하나의 수신 frame을 protobuf wire-format snapshot으로 반환한다.
+    pub fn ingest_protobuf(
+        &mut self,
+        frame: &CanFrame,
+        context: DecodeContext,
+    ) -> Result<Option<Vec<u8>>, GatewayError<D::Error, A::Error>> {
+        Ok(self
+            .ingest(frame, context)?
+            .map(|state| protobuf::vehicle_state(&state).encode_to_vec()))
     }
 }
 

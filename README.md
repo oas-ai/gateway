@@ -7,4 +7,4 @@ OAS Gateway의 Hardware·Firmware·Host daemon 경계를 관리합니다.
 
 Firmware는 Application에 Raw CAN TX 권한을 제공하지 않습니다.
 
-`host`는 canonical `VehicleState` snapshot까지만 생성합니다. protobuf SDK Rust package는 schema release를 입력으로 별도 생성·배포하며, 이 저장소는 생성물을 소유하지 않습니다.
+`host`는 canonical `VehicleState` snapshot과 `oas-sdk` 기반 protobuf wire-format을 생성합니다. SDK generated source는 schema repository의 build에서 관리하며 이 저장소는 생성물을 소유하지 않습니다.

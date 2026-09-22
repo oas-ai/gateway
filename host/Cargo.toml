@@ -11,6 +11,8 @@ path = "src/lib.rs"
 [dependencies]
 oas-can = { git = "https://github.com/oas-ai/can.git", rev = "70b6cdfe7e7c27d1513aaa6160d253f5051fdbc0" }
 oas-car = { git = "https://github.com/oas-ai/car.git", rev = "6b70a0d15c8b53bae98010dc75c6a49c3abda79d" }
+oas-sdk = { git = "https://github.com/oas-ai/sdk.git", rev = "1798c5efab35231b93fef0f4c3e69af962e89201" }
+prost = "0.14.4"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 socketcan = "4.0.0"

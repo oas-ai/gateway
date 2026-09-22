@@ -3,6 +3,8 @@ use oas_can::frame::{CanFrame, CanId};
 use oas_can::genesis_g80_legacy::GenesisG80LegacyDecoder;
 use oas_car::genesis_g80_legacy::GenesisG80LegacyAdapter;
 use oas_gateway_host::Gateway;
+use oas_sdk::vehicle::v1::VehicleState;
+use prost::Message;
 
 fn frame(id: u16, data: Vec<u8>) -> CanFrame {
     CanFrame::new(CanId::standard(id).unwrap(), data, false).unwrap()
@@ -34,4 +36,23 @@ fn gateway_converts_g80_frames_to_canonical_state() {
         .unwrap();
     assert_eq!(state.brake.pressed, Some(true));
     assert!(state.is_fresh_at(1_050, 50));
+}
+
+#[test]
+fn gateway_emits_the_sdk_vehicle_state_wire_contract() {
+    let mut gateway = Gateway::new(GenesisG80LegacyDecoder, GenesisG80LegacyAdapter::default());
+    let bytes = gateway
+        .ingest_protobuf(
+            &frame(1265, vec![0, 160, 0, 0]),
+            DecodeContext {
+                timestamp_ns: Some(1_000),
+                bus: 0,
+            },
+        )
+        .unwrap()
+        .unwrap();
+    let state = VehicleState::decode(bytes.as_slice()).unwrap();
+
+    assert_eq!(state.timestamp_ns, Some(1_000));
+    assert!((state.vehicle_speed_mps.unwrap() - 80.0 / 3.6).abs() < 0.000_01);
 }
