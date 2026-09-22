@@ -12,3 +12,5 @@ jobs:
     uses: oas-ai/.github/.github/workflows/cpp-ci.yml@main
     with:
       source-directory: firmware
+  rust:
+    uses: oas-ai/.github/.github/workflows/rust-ci.yml@main

@@ -1,0 +1,19 @@
+[package]
+name = "oas-gateway-host"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+description = "Read-only OAS CAN gateway host pipeline"
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+oas-can = { git = "https://github.com/oas-ai/can.git", rev = "70b6cdfe7e7c27d1513aaa6160d253f5051fdbc0" }
+oas-car = { git = "https://github.com/oas-ai/car.git", rev = "6b70a0d15c8b53bae98010dc75c6a49c3abda79d" }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+socketcan = "4.0.0"
+
+[dev-dependencies]
+serde_json = "1.0"

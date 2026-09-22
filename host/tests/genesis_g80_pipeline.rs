@@ -1,0 +1,37 @@
+use oas_can::decode::DecodeContext;
+use oas_can::frame::{CanFrame, CanId};
+use oas_can::genesis_g80_legacy::GenesisG80LegacyDecoder;
+use oas_car::genesis_g80_legacy::GenesisG80LegacyAdapter;
+use oas_gateway_host::Gateway;
+
+fn frame(id: u16, data: Vec<u8>) -> CanFrame {
+    CanFrame::new(CanId::standard(id).unwrap(), data, false).unwrap()
+}
+
+#[test]
+fn gateway_converts_g80_frames_to_canonical_state() {
+    let mut gateway = Gateway::new(GenesisG80LegacyDecoder, GenesisG80LegacyAdapter::default());
+    let context = DecodeContext {
+        timestamp_ns: Some(1_000),
+        bus: 0,
+    };
+
+    let state = gateway
+        .ingest(&frame(1265, vec![0, 160, 0, 0]), context)
+        .unwrap()
+        .unwrap();
+    assert!((state.vehicle_speed_mps.unwrap() - 80.0 / 3.6).abs() < 0.000_01);
+
+    let state = gateway
+        .ingest(&frame(688, vec![132, 3, 0, 0, 0]), context)
+        .unwrap()
+        .unwrap();
+    assert!((state.steering.angle_rad.unwrap() - std::f32::consts::FRAC_PI_2).abs() < 0.000_001);
+
+    let state = gateway
+        .ingest(&frame(916, vec![0, 0, 0, 0, 0, 64, 0, 0]), context)
+        .unwrap()
+        .unwrap();
+    assert_eq!(state.brake.pressed, Some(true));
+    assert!(state.is_fresh_at(1_050, 50));
+}
