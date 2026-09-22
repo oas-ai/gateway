@@ -1,6 +1,7 @@
 [Unit]
 Description=OAS read-only gateway, runtime, and HMI on %i
-After=network-online.target sys-subsystem-net-devices-%i.device
+After=network-online.target sys-subsystem-net-devices-%i.device ohayess-hmi.service
+Requires=ohayess-hmi.service
 Wants=network-online.target
 BindsTo=sys-subsystem-net-devices-%i.device
 StartLimitIntervalSec=60s

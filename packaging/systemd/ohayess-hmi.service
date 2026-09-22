@@ -1,0 +1,22 @@
+[Unit]
+Description=OAS Qt/QML HMI
+After=graphical.target
+
+[Service]
+Type=simple
+User=oas
+Group=oas
+RuntimeDirectory=oas-hmi
+RuntimeDirectoryMode=0750
+ExecStartPre=/usr/bin/sh -c 'test -p /run/oas-hmi/vehicle-state || /usr/bin/mkfifo -m 0660 /run/oas-hmi/vehicle-state'
+ExecStart=/usr/lib/oas-hmi/ohayess-hmi --stream /run/oas-hmi/vehicle-state
+Restart=always
+RestartSec=1s
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+RestrictAddressFamilies=AF_UNIX
+
+[Install]
+WantedBy=multi-user.target

@@ -7,6 +7,7 @@ interface=${3:-${OAS_CAN_INTERFACE:-can0}}
 bus=${4:-${OAS_CAN_BUS:-0}}
 viewer_bin=${OAS_VIEWER_BIN:-}
 viewer_address=${OAS_VIEWER_ADDRESS:-127.0.0.1:8080}
+hmi_stream=${OAS_HMI_STREAM:-}
 maximum_age_ms=${OAS_MAXIMUM_AGE_MS:-500}
 initial_backoff=${OAS_RECONNECT_INITIAL_BACKOFF_SECONDS:-1}
 maximum_backoff=${OAS_RECONNECT_MAX_BACKOFF_SECONDS:-5}
@@ -58,14 +59,15 @@ while true; do
   runtime_pid=$!
   pids=("$runtime_pid")
 
+  fanout_targets=("$runtime_pipe")
   if [[ -n $viewer_bin ]]; then
     "$viewer_bin" "$viewer_address" "$maximum_age_ms" <"$viewer_pipe" &
     viewer_pid=$!
     pids+=("$viewer_pid")
-    tee "$runtime_pipe" "$viewer_pipe" <"$snapshot_pipe" >/dev/null &
-  else
-    tee "$runtime_pipe" <"$snapshot_pipe" >/dev/null &
+    fanout_targets+=("$viewer_pipe")
   fi
+  [[ -n $hmi_stream ]] && fanout_targets+=("$hmi_stream")
+  tee "${fanout_targets[@]}" <"$snapshot_pipe" >/dev/null &
   fanout_pid=$!
   pids+=("$fanout_pid")
 
