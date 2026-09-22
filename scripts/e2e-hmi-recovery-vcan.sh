@@ -5,6 +5,7 @@ runtime_bin=${1:?usage: e2e-hmi-recovery-vcan.sh <ohayess-runtime> <ohayess-hmi>
 hmi_bin=${2:?usage: e2e-hmi-recovery-vcan.sh <ohayess-runtime> <ohayess-hmi> [gateway-host] [supervisor]}
 gateway_bin=${3:-target/debug/oas-gateway-host}
 supervisor=${4:-./scripts/run-gateway-runtime.sh}
+browser_bin=${OAS_HMI_BROWSER:-google-chrome}
 temp_dir=$(mktemp -d)
 supervisor_log="$temp_dir/supervisor.log"
 gateway_pid_file="$temp_dir/gateway.pid"
@@ -14,8 +15,7 @@ supervisor_pid=""
 cleanup() {
   [[ -n $supervisor_pid ]] && kill "$supervisor_pid" 2>/dev/null || true
   [[ -n $supervisor_pid ]] && wait "$supervisor_pid" 2>/dev/null || true
-  rm -f "$supervisor_log" "$gateway_pid_file"
-  rmdir "$temp_dir"
+  rm -rf "$temp_dir"
 }
 trap cleanup EXIT
 
@@ -53,8 +53,31 @@ wait_for_speed() {
   return 1
 }
 
+render_hmi() {
+  local route=$1
+  local profile=${route//\//-}
+  "$browser_bin" \
+    --headless=new \
+    --no-sandbox \
+    --disable-gpu \
+    --disable-dev-shm-usage \
+    --user-data-dir="$temp_dir/chrome-$profile" \
+    --virtual-time-budget=1000 \
+    --dump-dom "http://$hmi_address/#$route"
+}
+
 send_frames
 wait_for_speed
+
+for route in home media vehicle settings diagnostics; do
+  render_hmi "$route" | grep -Eq "<section class=\"screen\" data-screen=\"$route\">"
+done
+render_hmi media | grep -q '재생 조건: vehicle_in_motion'
+render_hmi media/library | grep -Eq 'data-tab-panel="library" class="content-grid">'
+render_hmi media/library | grep -Eq 'data-tab-panel="player" class="dashboard-grid" hidden>'
+render_hmi vehicle/vision | grep -Eq 'data-tab-panel="vision" class="dashboard-grid">'
+render_hmi settings/safety | grep -Eq 'data-tab-panel="safety" class="settings-list">'
+render_hmi diagnostics/logs | grep -Eq 'data-tab-panel="logs" class="settings-list">'
 
 kill -TERM "$old_gateway_pid"
 for _ in {1..40}; do
@@ -66,3 +89,4 @@ done
 
 send_frames
 wait_for_speed
+render_hmi diagnostics/can | grep -Eq 'data-tab-panel="can" class="content-grid">'
