@@ -33,10 +33,8 @@ impl ManufacturerAdapter for SyntheticAdapter {
 
 #[test]
 fn simulator_fixture_flows_through_the_gateway() {
-    let fixture: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../simulator/fixtures/synthetic_vehicle_status.json"
-    ))
-    .unwrap();
+    let fixture: serde_json::Value =
+        serde_json::from_str(include_str!("fixtures/synthetic_vehicle_status.json")).unwrap();
     let frame_id = CanId::standard(fixture["frame"]["id"].as_u64().unwrap() as u16).unwrap();
     let frame = CanFrame::new(
         frame_id,

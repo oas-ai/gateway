@@ -1,0 +1,18 @@
+{
+  "frame": {
+    "id": 291,
+    "is_fd": false,
+    "data": [0, 0]
+  },
+  "context": {
+    "timestamp_ns": 1000,
+    "bus": 0
+  },
+  "decoded_message": {
+    "name": "synthetic_status",
+    "signals": {
+      "speed_mps": 12.5,
+      "brake_pressed": false
+    }
+  }
+}
