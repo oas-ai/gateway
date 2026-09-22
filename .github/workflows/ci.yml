@@ -5,6 +5,9 @@ on:
     branches: [main]
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   license:
     uses: oas-ai/.github/.github/workflows/license-check.yml@main
@@ -16,6 +19,8 @@ jobs:
     uses: oas-ai/.github/.github/workflows/rust-ci.yml@main
   socketcan:
     runs-on: ubuntu-latest
+    env:
+      CARGO_TARGET_DIR: ${{ github.workspace }}/target
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
@@ -24,9 +29,10 @@ jobs:
           ref: 9b2f46f1e9f713d4fc6a1acb699cf73e4e68a24d
           path: ohayessOS
       - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
       - run: sudo apt-get update && sudo apt-get install -y can-utils "linux-modules-extra-$(uname -r)"
       - run: sudo modprobe vcan && sudo ip link add dev vcan0 type vcan && sudo ip link set vcan0 up
       - run: cargo test --test socketcan_vcan -- --ignored
       - run: cargo build -p oas-gateway-host
       - run: cargo build --manifest-path ohayessOS/Cargo.toml -p ohayess-runtime
-      - run: ./scripts/e2e-vcan.sh ohayessOS/target/debug/ohayess-runtime
+      - run: ./scripts/e2e-vcan.sh target/debug/ohayess-runtime
