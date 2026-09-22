@@ -3,7 +3,7 @@ set -euo pipefail
 
 interface=${1:-can0}
 service=${2:-"oas-gateway-runtime@$interface.service"}
-hmi_address=${OAS_HMI_ADDRESS:-127.0.0.1:8080}
+viewer_address=${OAS_VIEWER_ADDRESS:-127.0.0.1:8080}
 expected_bitrate=${OAS_CAN_BITRATE:-}
 
 fail() {
@@ -28,7 +28,7 @@ fi
 systemctl is-active --quiet "$service" || fail "$service is not active"
 [[ $(systemctl show "$service" -p NoNewPrivileges --value) == yes ]] || fail "$service permits new privileges"
 
-state=$(curl --fail --silent --show-error --max-time 2 "http://$hmi_address/state") || fail "HMI state endpoint is unavailable"
-grep -Fq '"rawDiagnostics"' <<<"$state" || fail "HMI state lacks raw diagnostics"
+state=$(curl --fail --silent --show-error --max-time 2 "http://$viewer_address/state") || fail "Viewer state endpoint is unavailable"
+grep -Fq '"rawDiagnostics"' <<<"$state" || fail "Viewer state lacks raw diagnostics"
 
-echo "preflight: $interface, $service, and HMI state are read-only ready"
+echo "preflight: $interface, $service, and Viewer state are read-only ready"

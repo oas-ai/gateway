@@ -15,8 +15,8 @@ Linux SocketCAN smoke test는 `vcan0`을 생성한 뒤 `cargo test --test socket
 
 전체 E2E는 `can-utils`와 `vcan0`을 준비하고 gateway 및 ohayessOS runtime을 빌드한 뒤 `./scripts/e2e-vcan.sh <ohayess-runtime 경로>`로 실행합니다. 테스트는 opendbc 기반 Hyundai Palisade 2020 프레임과 CGW1 저빔·LVR12 기어·WHL_SPD11 휠 속도·SCC14 신호를 보내고 runtime의 최신 protobuf `VehicleState`에 속도 약 22.22 m/s, 종가속도 1.25 m/s², 조향각 π/2 rad, 브레이크 입력, `night_mode`, Park 기어, 네 휠 속도, SCC 상태가 함께 누적되는지 확인합니다. `GW_DDM_PE` 및 `DATC12` body/comfort 값은 DBC-trusted `raw_signals`로만 전달합니다.
 
-`scripts/fixtures/palisade-2020-diagnostics.sh`는 이 경로가 공유하는 합성 DBC fixture다. VIN·연식·트림·위치·실차 timestamp가 없는 고정 payload만 포함하며, `e2e-hmi-recovery-vcan.sh`는 CAN Diagnostics 화면에서 도어·벨트·공조 raw 값을 실제로 표시하는지 검증한다.
+`scripts/fixtures/palisade-2020-diagnostics.sh`는 이 경로가 공유하는 합성 DBC fixture다. VIN·연식·트림·위치·실차 timestamp가 없는 고정 payload만 포함하며, `e2e-viewer-recovery-vcan.sh`는 CAN Diagnostics 화면에서 도어·벨트·공조 raw 값을 실제로 표시하는지 검증한다.
 
-`scripts/run-gateway-runtime.sh`는 gateway 종료 뒤 runtime을 새 stdout stream에 자동 재연결합니다. `OAS_HMI_BIN`을 설정하면 같은 snapshot을 runtime과 loopback HMI에 fan-out합니다. restart backoff는 1초에서 시작해 최대 5초이며, `./scripts/e2e-recovery-vcan.sh <ohayess-runtime 경로>`와 `./scripts/e2e-hmi-recovery-vcan.sh <ohayess-runtime 경로> <ohayess-hmi 경로>`가 gateway 종료·재시작 뒤 상태 수신, HMI route·tab 렌더링, 주행 중 미디어 잠금 및 `nightMode` 기반 다크 전환을 검증합니다.
+`scripts/run-gateway-runtime.sh`는 gateway 종료 뒤 runtime을 새 stdout stream에 자동 재연결합니다. `OAS_VIEWER_BIN`을 설정하면 같은 snapshot을 runtime과 loopback Viewer에 fan-out합니다. restart backoff는 1초에서 시작해 최대 5초이며, `./scripts/e2e-recovery-vcan.sh <ohayess-runtime 경로>`와 `./scripts/e2e-viewer-recovery-vcan.sh <ohayess-runtime 경로> <ohayess-viewer 경로>`가 gateway 종료·재시작 뒤 상태 수신, Viewer route·tab 렌더링, 주행 중 미디어 잠금 및 `nightMode` 기반 다크 전환을 검증합니다. 제품 Qt/QML HMI는 별도 platform bridge를 통해 stream을 받으며 이 개발용 fan-out에 포함하지 않습니다.
 
 실차 Linux 배포용 systemd template과 설치 절차는 [packaging/systemd/](packaging/systemd/README.md)에 있습니다. 이 서비스는 `oas-gateway-runtime@can0`처럼 CAN interface별로 실행하며 read-only SocketCAN 수신에 필요한 `CAP_NET_RAW`만 부여합니다.
