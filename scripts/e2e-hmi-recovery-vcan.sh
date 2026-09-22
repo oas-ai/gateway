@@ -71,7 +71,11 @@ assert_hmi() {
   local pattern=$2
   local profile=${route//\//-}
   render_hmi "$route"
-  grep -Eq "$pattern" "$temp_dir/hmi-$profile.html"
+  if ! grep -Eq "$pattern" "$temp_dir/hmi-$profile.html"; then
+    echo "HMI assertion failed for #$route: $pattern" >&2
+    cat "$temp_dir/hmi-$profile.html" >&2
+    return 1
+  fi
 }
 
 send_frames
