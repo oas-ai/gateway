@@ -1,10 +1,11 @@
 //! Linux SocketCAN 수신 adapter다.
 
 use std::io;
+use std::time::UNIX_EPOCH;
 
 use oas_can::decode::DecodeContext;
 use oas_can::frame::{CanFrame, CanFrameError, CanId};
-use socketcan::{CanAnyFrame, CanFdSocket, EmbeddedFrame as _, Socket as _};
+use socketcan::{CanAnyFrame, CanFdSocket, EmbeddedFrame as _, Socket as _, SocketOptions as _};
 
 /// SocketCAN 수신 frame을 OAS frame으로 변환할 수 없는 오류다.
 #[derive(Debug)]
@@ -34,15 +35,14 @@ pub struct SocketCanReceiver {
 
 impl SocketCanReceiver {
     pub fn open(interface: &str, bus: u8) -> Result<Self, SocketCanError> {
-        Ok(Self {
-            socket: CanFdSocket::open(interface)?,
-            bus,
-        })
+        let socket = CanFdSocket::open(interface)?;
+        socket.set_recv_timestamp(true)?;
+        Ok(Self { socket, bus })
     }
 
     /// 하나의 data frame을 읽는다. remote/error frame은 상태 pipeline에 전달하지 않는다.
     pub fn receive(&self) -> Result<Option<(CanFrame, DecodeContext)>, SocketCanError> {
-        let frame = self.socket.read_frame()?;
+        let (frame, timestamp) = self.socket.read_frame_with_timestamp()?;
         let (id, data, is_fd) = match frame {
             CanAnyFrame::Normal(frame) => (frame.id(), frame.data().to_vec(), false),
             CanAnyFrame::Fd(frame) => (frame.id(), frame.data().to_vec(), true),
@@ -60,7 +60,10 @@ impl SocketCanReceiver {
         Ok(Some((
             CanFrame::new(id, data, is_fd)?,
             DecodeContext {
-                timestamp_ns: None,
+                timestamp_ns: timestamp
+                    .duration_since(UNIX_EPOCH)
+                    .ok()
+                    .and_then(|duration| u64::try_from(duration.as_nanos()).ok()),
                 bus: self.bus,
             },
         )))

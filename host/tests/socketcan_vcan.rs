@@ -17,5 +17,6 @@ fn receives_a_classic_frame_from_vcan() {
     assert_eq!(received.id, CanId::standard(0x123).unwrap());
     assert_eq!(received.data, [0xde, 0xad]);
     assert!(!received.is_fd);
+    assert!(context.timestamp_ns.is_some());
     assert_eq!(context.bus, 7);
 }

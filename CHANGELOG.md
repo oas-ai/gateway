@@ -6,6 +6,7 @@
 - Add a Linux SocketCAN receiver for classic CAN and CAN FD data frames.
 - Add canonical VehicleState to `oas-sdk` protobuf output.
 - Add an opt-in `vcan0` receive smoke test and run it in Linux CI.
+- Add the blocking Linux host daemon with kernel receive timestamps and length-prefixed protobuf output.
 
 ## [0.1.0] - 2026-09-21
 

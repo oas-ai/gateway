@@ -9,4 +9,6 @@ Firmware는 Application에 Raw CAN TX 권한을 제공하지 않습니다.
 
 `host`는 canonical `VehicleState` snapshot과 `oas-sdk` 기반 protobuf wire-format을 생성합니다. SDK generated source는 schema repository의 build에서 관리하며 이 저장소는 생성물을 소유하지 않습니다.
 
+Linux host에서는 `cargo run -p oas-gateway-host -- can0 0`으로 daemon을 실행합니다. 첫 인자는 SocketCAN interface, 두 번째 인자는 bus 번호이며 생략하면 각각 `can0`, `0`입니다. stdout은 각 protobuf snapshot 앞에 4-byte big-endian 길이를 붙인 binary stream입니다.
+
 Linux SocketCAN smoke test는 `vcan0`을 생성한 뒤 `cargo test --test socketcan_vcan -- --ignored`로 실행합니다.
