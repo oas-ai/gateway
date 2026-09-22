@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Add a read-only Rust host pipeline with Genesis G80 and simulator-fixture integration tests.
+- Add a read-only Rust host pipeline with Hyundai Palisade 2020 and simulator-fixture integration tests.
 - Add a Linux SocketCAN receiver for classic CAN and CAN FD data frames.
 - Add canonical VehicleState to `oas-sdk` protobuf output.
 - Add an opt-in `vcan0` receive smoke test and run it in Linux CI.

@@ -14,8 +14,8 @@ fn run() -> Result<(), String> {
     use std::env;
     use std::io::{self, Write};
 
-    use oas_can::genesis_g80_legacy::GenesisG80LegacyDecoder;
-    use oas_car::genesis_g80_legacy::GenesisG80LegacyAdapter;
+    use oas_can::hyundai_palisade_2020::HyundaiPalisade2020Decoder;
+    use oas_car::hyundai_palisade_2020::HyundaiPalisade2020Adapter;
     use oas_gateway_host::Gateway;
     use oas_gateway_host::socketcan::SocketCanReceiver;
 
@@ -28,7 +28,7 @@ fn run() -> Result<(), String> {
         .unwrap_or(0);
     let receiver =
         SocketCanReceiver::open(&interface, bus).map_err(|error| format!("{error:?}"))?;
-    let mut gateway = Gateway::new(GenesisG80LegacyDecoder, GenesisG80LegacyAdapter::default());
+    let mut gateway = Gateway::new(HyundaiPalisade2020Decoder, HyundaiPalisade2020Adapter::default());
     let stdout = io::stdout();
     let mut output = stdout.lock();
 

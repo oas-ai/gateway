@@ -342,12 +342,12 @@ dependencies = [
 [[package]]
 name = "oas-can"
 version = "0.1.0"
-source = "git+https://github.com/oas-ai/can.git?rev=87dbf2e2ffc54b25cfade8f5f8b23b19456cfbb2#87dbf2e2ffc54b25cfade8f5f8b23b19456cfbb2"
+source = "git+https://github.com/oas-ai/can.git?rev=c9c44b452be3aa53fd132520896bbf1ab4ae2e54#c9c44b452be3aa53fd132520896bbf1ab4ae2e54"
 
 [[package]]
 name = "oas-car"
 version = "0.1.0"
-source = "git+https://github.com/oas-ai/car.git?rev=eb010ed5d4bd549ff3cc3ad46aef437ad0970829#eb010ed5d4bd549ff3cc3ad46aef437ad0970829"
+source = "git+https://github.com/oas-ai/car.git?rev=1a50db026ac4be72f3dca859fa8b5f8d7aff7043#1a50db026ac4be72f3dca859fa8b5f8d7aff7043"
 dependencies = [
  "oas-can",
 ]

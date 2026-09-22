@@ -1,7 +1,7 @@
 use oas_can::decode::DecodeContext;
 use oas_can::frame::{CanFrame, CanId};
-use oas_can::genesis_g80_legacy::GenesisG80LegacyDecoder;
-use oas_car::genesis_g80_legacy::GenesisG80LegacyAdapter;
+use oas_can::hyundai_palisade_2020::HyundaiPalisade2020Decoder;
+use oas_car::hyundai_palisade_2020::HyundaiPalisade2020Adapter;
 use oas_car::vehicle_state::GearPosition;
 use oas_gateway_host::Gateway;
 use oas_sdk::vehicle::v1::VehicleState;
@@ -12,8 +12,8 @@ fn frame(id: u16, data: Vec<u8>) -> CanFrame {
 }
 
 #[test]
-fn gateway_converts_g80_frames_to_canonical_state() {
-    let mut gateway = Gateway::new(GenesisG80LegacyDecoder, GenesisG80LegacyAdapter::default());
+fn gateway_converts_palisade_frames_to_canonical_state() {
+    let mut gateway = Gateway::new(HyundaiPalisade2020Decoder, HyundaiPalisade2020Adapter::default());
     let context = DecodeContext {
         timestamp_ns: Some(1_000),
         bus: 0,
@@ -67,7 +67,7 @@ fn gateway_converts_g80_frames_to_canonical_state() {
 
 #[test]
 fn gateway_emits_the_sdk_vehicle_state_wire_contract() {
-    let mut gateway = Gateway::new(GenesisG80LegacyDecoder, GenesisG80LegacyAdapter::default());
+    let mut gateway = Gateway::new(HyundaiPalisade2020Decoder, HyundaiPalisade2020Adapter::default());
     gateway
         .ingest(
             &frame(871, vec![0, 0, 0, 0, 0, 0, 0, 0]),
