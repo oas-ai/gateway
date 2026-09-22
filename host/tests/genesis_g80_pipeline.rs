@@ -31,9 +31,10 @@ fn gateway_converts_g80_frames_to_canonical_state() {
     assert!((state.steering.angle_rad.unwrap() - std::f32::consts::FRAC_PI_2).abs() < 0.000_001);
 
     let state = gateway
-        .ingest(&frame(916, vec![0, 0, 0, 0, 0, 64, 0, 0]), context)
+        .ingest(&frame(916, vec![0, 0, 0, 0, 124, 68, 0, 0]), context)
         .unwrap()
         .unwrap();
+    assert!((state.acceleration_mps2.unwrap() - 1.25).abs() < 0.000_01);
     assert_eq!(state.brake.pressed, Some(true));
     assert!(state.is_fresh_at(1_050, 50));
 }

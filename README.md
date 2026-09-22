@@ -13,4 +13,4 @@ Linux host에서는 `cargo run -p oas-gateway-host -- can0 0`으로 daemon을 �
 
 Linux SocketCAN smoke test는 `vcan0`을 생성한 뒤 `cargo test --test socketcan_vcan -- --ignored`로 실행합니다.
 
-전체 E2E는 `can-utils`와 `vcan0`을 준비하고 gateway 및 ohayessOS runtime을 빌드한 뒤 `./scripts/e2e-vcan.sh <ohayess-runtime 경로>`로 실행합니다. 테스트는 Genesis G80 속도 프레임을 보내고 runtime이 최신 protobuf `VehicleState`에서 약 22.22 m/s를 읽는지 확인합니다.
+전체 E2E는 `can-utils`와 `vcan0`을 준비하고 gateway 및 ohayessOS runtime을 빌드한 뒤 `./scripts/e2e-vcan.sh <ohayess-runtime 경로>`로 실행합니다. 테스트는 Genesis G80 프레임 세 개를 보내고 runtime의 최신 protobuf `VehicleState`에 속도 약 22.22 m/s, 종가속도 1.25 m/s², 조향각 π/2 rad, 브레이크 입력이 함께 누적되는지 확인합니다.
