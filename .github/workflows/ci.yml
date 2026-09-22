@@ -18,7 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: oas-ai/ohayessOS
+          ref: 518bd6cad76ac44cd30f9439b5e571ea2f928df4
+          path: ohayessOS
       - uses: dtolnay/rust-toolchain@stable
-      - run: sudo apt-get update && sudo apt-get install -y "linux-modules-extra-$(uname -r)"
+      - run: sudo apt-get update && sudo apt-get install -y can-utils "linux-modules-extra-$(uname -r)"
       - run: sudo modprobe vcan && sudo ip link add dev vcan0 type vcan && sudo ip link set vcan0 up
       - run: cargo test --test socketcan_vcan -- --ignored
+      - run: cargo build -p oas-gateway-host
+      - run: cargo build --manifest-path ohayessOS/Cargo.toml -p ohayess-runtime
+      - run: ./scripts/e2e-vcan.sh ohayessOS/target/debug/ohayess-runtime

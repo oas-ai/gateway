@@ -12,3 +12,5 @@ Firmware는 Application에 Raw CAN TX 권한을 제공하지 않습니다.
 Linux host에서는 `cargo run -p oas-gateway-host -- can0 0`으로 daemon을 실행합니다. 첫 인자는 SocketCAN interface, 두 번째 인자는 bus 번호이며 생략하면 각각 `can0`, `0`입니다. stdout은 각 protobuf snapshot 앞에 4-byte big-endian 길이를 붙인 binary stream입니다.
 
 Linux SocketCAN smoke test는 `vcan0`을 생성한 뒤 `cargo test --test socketcan_vcan -- --ignored`로 실행합니다.
+
+전체 E2E는 `can-utils`와 `vcan0`을 준비하고 gateway 및 ohayessOS runtime을 빌드한 뒤 `./scripts/e2e-vcan.sh <ohayess-runtime 경로>`로 실행합니다. 테스트는 Genesis G80 속도 프레임을 보내고 runtime이 최신 protobuf `VehicleState`에서 약 22.22 m/s를 읽는지 확인합니다.
