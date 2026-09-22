@@ -1,5 +1,5 @@
 [Unit]
-Description=OAS read-only gateway and runtime on %i
+Description=OAS read-only gateway, runtime, and HMI on %i
 After=network-online.target sys-subsystem-net-devices-%i.device
 Wants=network-online.target
 BindsTo=sys-subsystem-net-devices-%i.device
@@ -24,7 +24,7 @@ ProtectSystem=strict
 ProtectControlGroups=true
 ProtectKernelModules=true
 ProtectKernelTunables=true
-RestrictAddressFamilies=AF_UNIX AF_CAN
+RestrictAddressFamilies=AF_UNIX AF_CAN AF_INET AF_INET6
 
 [Install]
 WantedBy=multi-user.target
