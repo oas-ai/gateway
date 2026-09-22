@@ -8,3 +8,5 @@ OAS Gateway의 Hardware·Firmware·Host daemon 경계를 관리합니다.
 Firmware는 Application에 Raw CAN TX 권한을 제공하지 않습니다.
 
 `host`는 canonical `VehicleState` snapshot과 `oas-sdk` 기반 protobuf wire-format을 생성합니다. SDK generated source는 schema repository의 build에서 관리하며 이 저장소는 생성물을 소유하지 않습니다.
+
+Linux SocketCAN smoke test는 `vcan0`을 생성한 뒤 `cargo test --test socketcan_vcan -- --ignored`로 실행합니다.
