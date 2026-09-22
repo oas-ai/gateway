@@ -1,0 +1,30 @@
+[Unit]
+Description=OAS read-only gateway and runtime on %i
+After=network-online.target sys-subsystem-net-devices-%i.device
+Wants=network-online.target
+BindsTo=sys-subsystem-net-devices-%i.device
+StartLimitIntervalSec=60s
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=oas
+Group=oas
+EnvironmentFile=-/etc/oas-gateway/runtime.env
+Environment=OAS_CAN_INTERFACE=%i
+ExecStart=/usr/lib/oas-gateway/run-gateway-runtime.sh /usr/lib/oas-gateway/bin/ohayess-runtime /usr/lib/oas-gateway/bin/oas-gateway-host
+Restart=always
+RestartSec=1s
+CapabilityBoundingSet=CAP_NET_RAW
+AmbientCapabilities=CAP_NET_RAW
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+RestrictAddressFamilies=AF_UNIX AF_CAN
+
+[Install]
+WantedBy=multi-user.target

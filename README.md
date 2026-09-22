@@ -14,3 +14,7 @@ Linux host에서는 `cargo run -p oas-gateway-host -- can0 0`으로 daemon을 �
 Linux SocketCAN smoke test는 `vcan0`을 생성한 뒤 `cargo test --test socketcan_vcan -- --ignored`로 실행합니다.
 
 전체 E2E는 `can-utils`와 `vcan0`을 준비하고 gateway 및 ohayessOS runtime을 빌드한 뒤 `./scripts/e2e-vcan.sh <ohayess-runtime 경로>`로 실행합니다. 테스트는 Genesis G80 프레임 세 개를 보내고 runtime의 최신 protobuf `VehicleState`에 속도 약 22.22 m/s, 종가속도 1.25 m/s², 조향각 π/2 rad, 브레이크 입력이 함께 누적되는지 확인합니다.
+
+`scripts/run-gateway-runtime.sh`는 gateway 종료 뒤 runtime을 새 stdout stream에 자동 재연결합니다. restart backoff는 1초에서 시작해 최대 5초이며, `./scripts/e2e-recovery-vcan.sh <ohayess-runtime 경로>`가 gateway 종료·재시작 뒤에도 상태 수신이 복구되는지 검증합니다.
+
+실차 Linux 배포용 systemd template과 설치 절차는 [packaging/systemd/](packaging/systemd/README.md)에 있습니다. 이 서비스는 `oas-gateway-runtime@can0`처럼 CAN interface별로 실행하며 read-only SocketCAN 수신에 필요한 `CAP_NET_RAW`만 부여합니다.

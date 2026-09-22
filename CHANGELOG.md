@@ -9,6 +9,8 @@
 - Add the blocking Linux host daemon with kernel receive timestamps and length-prefixed protobuf output.
 - Add a Linux vcan end-to-end test from a CAN frame through the gateway protobuf stream to the ohayessOS runtime.
 - Expand the vcan end-to-end scenario to verify accumulated speed, acceleration, steering, and braking state.
+- Add bounded gateway restart recovery with a vcan end-to-end recovery test.
+- Add a hardened systemd template package for real-vehicle Linux deployment.
 
 ## [0.1.0] - 2026-09-21
 
