@@ -80,11 +80,11 @@ assert_hmi() {
 
 send_frames
 wait_for_speed
+assert_hmi media '재생 조건: vehicle_in_motion'
 
 for route in home media vehicle settings diagnostics; do
   assert_hmi "$route" "<section class=\"screen\" data-screen=\"$route\">"
 done
-assert_hmi media '재생 조건: vehicle_in_motion'
 assert_hmi media/library 'data-tab-panel="library" class="content-grid">'
 assert_hmi media/library 'data-tab-panel="player" class="dashboard-grid" hidden>'
 assert_hmi vehicle/vision 'data-tab-panel="vision" class="dashboard-grid">'
