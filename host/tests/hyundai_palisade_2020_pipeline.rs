@@ -66,6 +66,13 @@ fn gateway_converts_palisade_frames_to_canonical_state() {
         .unwrap()
         .unwrap();
     assert_eq!(state.cruise.enabled, Some(true));
+
+    let state = gateway
+        .ingest(&frame(66, vec![12, 0, 16, 0, 0, 0, 0, 0]), context)
+        .unwrap()
+        .unwrap();
+    assert_eq!(state.raw_signals["DATC12.CR_Datc_DrTempDispC"], 20.0);
+    assert_eq!(state.raw_signals["DATC12.CR_Datc_PsTempDispC"], 22.0);
 }
 
 #[test]
@@ -77,6 +84,15 @@ fn gateway_emits_the_sdk_vehicle_state_wire_contract() {
     gateway
         .ingest(
             &frame(871, vec![0, 0, 0, 0, 0, 0, 0, 0]),
+            DecodeContext {
+                timestamp_ns: Some(1_000),
+                bus: 0,
+            },
+        )
+        .unwrap();
+    gateway
+        .ingest(
+            &frame(1313, vec![57, 0, 0, 0, 0, 0, 0, 0]),
             DecodeContext {
                 timestamp_ns: Some(1_000),
                 bus: 0,
@@ -118,4 +134,6 @@ fn gateway_emits_the_sdk_vehicle_state_wire_contract() {
     assert_eq!(state.gear.unwrap().position, 1);
     assert_eq!(state.wheels.len(), 4);
     assert_eq!(state.cruise.unwrap().enabled, Some(true));
+    assert_eq!(state.raw_signals["GW_DDM_PE.C_DRVDoorStatus"], 1.0);
+    assert_eq!(state.raw_signals["GW_DDM_PE.C_RLDoorStatus"], 3.0);
 }
