@@ -19,6 +19,8 @@ pub struct Gateway<D, A> {
     adapter: A,
 }
 
+pub type GatewayResult<T, D, A> = Result<T, GatewayError<D, A>>;
+
 impl<D, A> Gateway<D, A> {
     pub fn new(decoder: D, adapter: A) -> Self {
         Self { decoder, adapter }
@@ -39,7 +41,7 @@ where
         &mut self,
         frame: &CanFrame,
         context: DecodeContext,
-    ) -> Result<Option<VehicleState>, GatewayError<D::Error, A::Error>> {
+    ) -> GatewayResult<Option<VehicleState>, D::Error, A::Error> {
         let Some(message) = self
             .decoder
             .decode(frame, context)
@@ -57,7 +59,7 @@ where
         &mut self,
         frame: &CanFrame,
         context: DecodeContext,
-    ) -> Result<Option<Vec<u8>>, GatewayError<D::Error, A::Error>> {
+    ) -> GatewayResult<Option<Vec<u8>>, D::Error, A::Error> {
         Ok(self
             .ingest(frame, context)?
             .map(|state| protobuf::vehicle_state(&state).encode_to_vec()))

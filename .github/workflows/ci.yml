@@ -19,5 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
+      - run: sudo apt-get update && sudo apt-get install -y "linux-modules-extra-$(uname -r)"
       - run: sudo modprobe vcan && sudo ip link add dev vcan0 type vcan && sudo ip link set vcan0 up
       - run: cargo test --test socketcan_vcan -- --ignored
