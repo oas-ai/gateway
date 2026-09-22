@@ -6,6 +6,7 @@ hmi_bin=${2:?usage: e2e-hmi-recovery-vcan.sh <ohayess-runtime> <ohayess-hmi> [ga
 gateway_bin=${3:-target/debug/oas-gateway-host}
 supervisor=${4:-./scripts/run-gateway-runtime.sh}
 browser_bin=${OAS_HMI_BROWSER:-google-chrome}
+source "$(dirname "$0")/fixtures/palisade-2020-diagnostics.sh"
 temp_dir=$(mktemp -d)
 supervisor_log="$temp_dir/supervisor.log"
 gateway_pid_file="$temp_dir/gateway.pid"
@@ -42,13 +43,7 @@ old_gateway_pid=$(<"$gateway_pid_file")
 kill -0 "$old_gateway_pid"
 
 send_frames() {
-  cansend vcan0 4F1#00A00000
-  cansend vcan0 2B0#8403000000
-  cansend vcan0 394#000000007C440000
-  cansend vcan0 541#0000008000000000
-  cansend vcan0 367#0000000000000000
-  cansend vcan0 386#0020001000080004
-  cansend vcan0 389#0000000001000000
+  send_palisade_2020_frames
 }
 
 send_frames_continuously() {
@@ -121,3 +116,4 @@ done
 send_frames
 wait_for_speed
 assert_hmi diagnostics/can 'data-tab-panel="can" class="content-grid">'
+assert_hmi diagnostics/can 'door sw 1.*belt D/P 1/1.*door D/P/RL/RR 1/2/3/0.*temp D/P 20/22°C'

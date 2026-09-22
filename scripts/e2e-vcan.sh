@@ -3,6 +3,7 @@ set -euo pipefail
 
 runtime_bin=${1:?usage: e2e-vcan.sh <ohayess-runtime> [gateway-host]}
 gateway_bin=${2:-target/debug/oas-gateway-host}
+source "$(dirname "$0")/fixtures/palisade-2020-diagnostics.sh"
 temp_dir=$(mktemp -d)
 snapshot_pipe="$temp_dir/snapshots"
 runtime_log="$temp_dir/runtime.log"
@@ -30,12 +31,7 @@ gateway_pid=$!
 runtime_pid=$!
 
 for _ in {1..20}; do
-  cansend vcan0 4F1#00A00000
-  cansend vcan0 2B0#8403000000
-  cansend vcan0 394#000000007C440000
-  cansend vcan0 367#0000000000000000
-  cansend vcan0 386#0020001000080004
-  cansend vcan0 389#0000000001000000
+  send_palisade_2020_frames
   if grep -Eq 'speed_mps=Some\(22\.222.*acceleration_mps2=Some\(1\.25\).*steering_angle_rad=Some\(1\.570796.*brake_pressed=Some\(true\).*fresh=true' "$runtime_log"; then
     exit 0
   fi

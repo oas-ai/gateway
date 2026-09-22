@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add a shared synthetic Palisade DBC fixture and assert raw diagnostics in the vCAN-to-HMI E2E path.
 - Forward DBC-trusted Palisade raw body, door, seatbelt, and climate diagnostics to the SDK state stream.
 - Add a read-only Rust host pipeline with Hyundai Palisade 2020 and simulator-fixture integration tests.
 - Add a Linux SocketCAN receiver for classic CAN and CAN FD data frames.
