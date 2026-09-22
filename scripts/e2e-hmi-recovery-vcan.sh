@@ -97,6 +97,8 @@ assert_hmi media 'data-theme="dark"'
 for route in home media workspace vehicle settings diagnostics; do
   assert_hmi "$route" "<section class=\"screen\" data-screen=\"$route\">"
 done
+assert_hmi home '오늘의 주행'
+assert_hmi home 'Vehicle state'
 assert_hmi media/library 'data-tab-panel="library" class="content-grid">'
 assert_hmi media/library 'data-tab-panel="player" class="dashboard-grid" hidden(="")?>'
 assert_hmi vehicle/vision 'data-tab-panel="vision" class="dashboard-grid">'
