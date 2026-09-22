@@ -1,6 +1,6 @@
 # systemd deployment
 
-이 패키지는 read-only `oas-gateway-host`, `ohayess-runtime`, `ohayess-viewer`를 한 감독 프로세스로 실행한다. Gateway snapshot은 runtime과 loopback Viewer, Qt/QML HMI의 `/run/oas-hmi/vehicle-state` FIFO에 동시에 fan-out된다. HMI bridge는 protobuf를 직접 decode한다. 하나가 종료되면 모두 새 stream으로 재연결한다. 재시작 간격은 1초에서 시작해 5초를 넘지 않으며, 30초 이상 정상 실행하면 다시 1초로 초기화한다.
+이 패키지는 read-only `oas-gateway-host`, `ohayess-runtime`, `ohayess-viewer`를 한 감독 프로세스로 실행한다. Gateway snapshot은 runtime과 loopback Viewer에 fan-out되고, Runtime은 정책 결과를 포함한 `HmiState`를 Qt/QML HMI의 `/run/oas-hmi/vehicle-state` FIFO에 전달한다. HMI bridge는 `HmiState` protobuf를 직접 decode한다. 하나가 종료되면 모두 새 stream으로 재연결한다. 재시작 간격은 1초에서 시작해 5초를 넘지 않으며, 30초 이상 정상 실행하면 다시 1초로 초기화한다.
 
 대상 차량에서 먼저 `can0`을 SocketCAN interface로 설정하고, `oas` system user와 아래 경로를 준비한다.
 

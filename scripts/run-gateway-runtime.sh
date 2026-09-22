@@ -16,6 +16,7 @@ gateway_pid=""
 runtime_pid=""
 fanout_pid=""
 viewer_pid=""
+hmi_forward_pid=""
 temp_dir=$(mktemp -d)
 snapshot_pipe="$temp_dir/snapshots"
 runtime_pipe="$temp_dir/runtime"
@@ -24,6 +25,10 @@ mkfifo "$runtime_pipe"
 if [[ -n $viewer_bin ]]; then
   viewer_pipe="$temp_dir/viewer"
   mkfifo "$viewer_pipe"
+fi
+if [[ -n $hmi_stream ]]; then
+  hmi_state_pipe="$temp_dir/hmi-state"
+  mkfifo "$hmi_state_pipe"
 fi
 
 for value in "$initial_backoff" "$maximum_backoff" "$stable_seconds"; do
@@ -38,15 +43,16 @@ done
 }
 
 stop() {
-  for pid in "$gateway_pid" "$fanout_pid" "$runtime_pid" "$viewer_pid"; do
+  for pid in "$gateway_pid" "$fanout_pid" "$runtime_pid" "$viewer_pid" "$hmi_forward_pid"; do
     [[ -n $pid ]] && kill "$pid" 2>/dev/null || true
   done
   wait "$gateway_pid" 2>/dev/null || true
   wait "$fanout_pid" 2>/dev/null || true
   wait "$runtime_pid" 2>/dev/null || true
   wait "$viewer_pid" 2>/dev/null || true
+  wait "$hmi_forward_pid" 2>/dev/null || true
   [[ -n ${OAS_GATEWAY_PID_FILE:-} ]] && rm -f "$OAS_GATEWAY_PID_FILE"
-  rm -f "$snapshot_pipe" "$runtime_pipe" "${viewer_pipe:-}"
+  rm -f "$snapshot_pipe" "$runtime_pipe" "${viewer_pipe:-}" "${hmi_state_pipe:-}"
   rmdir "$temp_dir"
   exit 0
 }
@@ -55,9 +61,16 @@ trap stop INT TERM
 backoff=$initial_backoff
 while true; do
   started_at=$SECONDS
-  "$runtime_bin" "$maximum_age_ms" <"$runtime_pipe" &
+  if [[ -n $hmi_stream ]]; then
+    cat "$hmi_state_pipe" >"$hmi_stream" &
+    hmi_forward_pid=$!
+    OAS_HMI_STATE_OUTPUT=true "$runtime_bin" "$maximum_age_ms" <"$runtime_pipe" >"$hmi_state_pipe" &
+  else
+    "$runtime_bin" "$maximum_age_ms" <"$runtime_pipe" &
+  fi
   runtime_pid=$!
   pids=("$runtime_pid")
+  [[ -n $hmi_stream ]] && pids+=("$hmi_forward_pid")
 
   fanout_targets=("$runtime_pipe")
   if [[ -n $viewer_bin ]]; then
@@ -66,7 +79,6 @@ while true; do
     pids+=("$viewer_pid")
     fanout_targets+=("$viewer_pipe")
   fi
-  [[ -n $hmi_stream ]] && fanout_targets+=("$hmi_stream")
   tee "${fanout_targets[@]}" <"$snapshot_pipe" >/dev/null &
   fanout_pid=$!
   pids+=("$fanout_pid")
