@@ -63,21 +63,29 @@ render_hmi() {
     --disable-dev-shm-usage \
     --user-data-dir="$temp_dir/chrome-$profile" \
     --virtual-time-budget=1000 \
-    --dump-dom "http://$hmi_address/#$route"
+    --dump-dom "http://$hmi_address/#$route" > "$temp_dir/hmi-$profile.html"
+}
+
+assert_hmi() {
+  local route=$1
+  local pattern=$2
+  local profile=${route//\//-}
+  render_hmi "$route"
+  grep -Eq "$pattern" "$temp_dir/hmi-$profile.html"
 }
 
 send_frames
 wait_for_speed
 
 for route in home media vehicle settings diagnostics; do
-  render_hmi "$route" | grep -Eq "<section class=\"screen\" data-screen=\"$route\">"
+  assert_hmi "$route" "<section class=\"screen\" data-screen=\"$route\">"
 done
-render_hmi media | grep -q '재생 조건: vehicle_in_motion'
-render_hmi media/library | grep -Eq 'data-tab-panel="library" class="content-grid">'
-render_hmi media/library | grep -Eq 'data-tab-panel="player" class="dashboard-grid" hidden>'
-render_hmi vehicle/vision | grep -Eq 'data-tab-panel="vision" class="dashboard-grid">'
-render_hmi settings/safety | grep -Eq 'data-tab-panel="safety" class="settings-list">'
-render_hmi diagnostics/logs | grep -Eq 'data-tab-panel="logs" class="settings-list">'
+assert_hmi media '재생 조건: vehicle_in_motion'
+assert_hmi media/library 'data-tab-panel="library" class="content-grid">'
+assert_hmi media/library 'data-tab-panel="player" class="dashboard-grid" hidden>'
+assert_hmi vehicle/vision 'data-tab-panel="vision" class="dashboard-grid">'
+assert_hmi settings/safety 'data-tab-panel="safety" class="settings-list">'
+assert_hmi diagnostics/logs 'data-tab-panel="logs" class="settings-list">'
 
 kill -TERM "$old_gateway_pid"
 for _ in {1..40}; do
@@ -89,4 +97,4 @@ done
 
 send_frames
 wait_for_speed
-render_hmi diagnostics/can | grep -Eq 'data-tab-panel="can" class="content-grid">'
+assert_hmi diagnostics/can 'data-tab-panel="can" class="content-grid">'
