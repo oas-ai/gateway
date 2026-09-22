@@ -13,7 +13,10 @@ fn frame(id: u16, data: Vec<u8>) -> CanFrame {
 
 #[test]
 fn gateway_converts_palisade_frames_to_canonical_state() {
-    let mut gateway = Gateway::new(HyundaiPalisade2020Decoder, HyundaiPalisade2020Adapter::default());
+    let mut gateway = Gateway::new(
+        HyundaiPalisade2020Decoder,
+        HyundaiPalisade2020Adapter::default(),
+    );
     let context = DecodeContext {
         timestamp_ns: Some(1_000),
         bus: 0,
@@ -67,7 +70,10 @@ fn gateway_converts_palisade_frames_to_canonical_state() {
 
 #[test]
 fn gateway_emits_the_sdk_vehicle_state_wire_contract() {
-    let mut gateway = Gateway::new(HyundaiPalisade2020Decoder, HyundaiPalisade2020Adapter::default());
+    let mut gateway = Gateway::new(
+        HyundaiPalisade2020Decoder,
+        HyundaiPalisade2020Adapter::default(),
+    );
     gateway
         .ingest(
             &frame(871, vec![0, 0, 0, 0, 0, 0, 0, 0]),

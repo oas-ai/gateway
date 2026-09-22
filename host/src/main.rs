@@ -28,7 +28,10 @@ fn run() -> Result<(), String> {
         .unwrap_or(0);
     let receiver =
         SocketCanReceiver::open(&interface, bus).map_err(|error| format!("{error:?}"))?;
-    let mut gateway = Gateway::new(HyundaiPalisade2020Decoder, HyundaiPalisade2020Adapter::default());
+    let mut gateway = Gateway::new(
+        HyundaiPalisade2020Decoder,
+        HyundaiPalisade2020Adapter::default(),
+    );
     let stdout = io::stdout();
     let mut output = stdout.lock();
 
