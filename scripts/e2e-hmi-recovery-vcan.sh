@@ -11,8 +11,11 @@ supervisor_log="$temp_dir/supervisor.log"
 gateway_pid_file="$temp_dir/gateway.pid"
 hmi_address="127.0.0.1:18080"
 supervisor_pid=""
+frame_sender_pid=""
 
 cleanup() {
+  [[ -n $frame_sender_pid ]] && kill "$frame_sender_pid" 2>/dev/null || true
+  [[ -n $frame_sender_pid ]] && wait "$frame_sender_pid" 2>/dev/null || true
   [[ -n $supervisor_pid ]] && kill "$supervisor_pid" 2>/dev/null || true
   [[ -n $supervisor_pid ]] && wait "$supervisor_pid" 2>/dev/null || true
   rm -rf "$temp_dir"
@@ -42,6 +45,13 @@ send_frames() {
   cansend vcan0 4F1#00A00000
   cansend vcan0 2B0#8403000000
   cansend vcan0 394#000000007C440000
+}
+
+send_frames_continuously() {
+  while true; do
+    send_frames
+    sleep 0.1
+  done
 }
 
 wait_for_speed() {
@@ -80,6 +90,8 @@ assert_hmi() {
 
 send_frames
 wait_for_speed
+send_frames_continuously &
+frame_sender_pid=$!
 assert_hmi media '재생 조건: vehicle_in_motion'
 
 for route in home media vehicle settings diagnostics; do
