@@ -50,6 +50,19 @@ fn gateway_converts_g80_frames_to_canonical_state() {
         .unwrap()
         .unwrap();
     assert_eq!(state.gear.position, GearPosition::Park);
+
+    let state = gateway
+        .ingest(&frame(902, vec![0, 32, 0, 16, 0, 8, 0, 4]), context)
+        .unwrap()
+        .unwrap();
+    assert_eq!(state.wheels.len(), 4);
+    assert_eq!(state.wheels[0].speed_mps, Some(256.0 / 3.6));
+
+    let state = gateway
+        .ingest(&frame(905, vec![0, 0, 0, 0, 1, 0, 0, 0]), context)
+        .unwrap()
+        .unwrap();
+    assert_eq!(state.cruise.enabled, Some(true));
 }
 
 #[test]
@@ -58,6 +71,24 @@ fn gateway_emits_the_sdk_vehicle_state_wire_contract() {
     gateway
         .ingest(
             &frame(871, vec![0, 0, 0, 0, 0, 0, 0, 0]),
+            DecodeContext {
+                timestamp_ns: Some(1_000),
+                bus: 0,
+            },
+        )
+        .unwrap();
+    gateway
+        .ingest(
+            &frame(902, vec![0, 32, 0, 16, 0, 8, 0, 4]),
+            DecodeContext {
+                timestamp_ns: Some(1_000),
+                bus: 0,
+            },
+        )
+        .unwrap();
+    gateway
+        .ingest(
+            &frame(905, vec![0, 0, 0, 0, 1, 0, 0, 0]),
             DecodeContext {
                 timestamp_ns: Some(1_000),
                 bus: 0,
@@ -79,4 +110,6 @@ fn gateway_emits_the_sdk_vehicle_state_wire_contract() {
     assert_eq!(state.timestamp_ns, Some(1_000));
     assert!((state.vehicle_speed_mps.unwrap() - 80.0 / 3.6).abs() < 0.000_01);
     assert_eq!(state.gear.unwrap().position, 1);
+    assert_eq!(state.wheels.len(), 4);
+    assert_eq!(state.cruise.unwrap().enabled, Some(true));
 }
