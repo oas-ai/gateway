@@ -116,4 +116,5 @@ done
 send_frames
 wait_for_speed
 assert_hmi diagnostics/can 'data-tab-panel="can" class="content-grid">'
+assert_hmi diagnostics/can '제어·안전 판단에는 사용하지 않습니다'
 assert_hmi diagnostics/can 'door sw 1.*belt D/P 1/1.*door D/P/RL/RR 1/2/3/0.*temp D/P 20/22°C'
