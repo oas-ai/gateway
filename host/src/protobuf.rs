@@ -75,6 +75,7 @@ pub fn vehicle_state(state: &car::VehicleState) -> sdk::VehicleState {
             })
             .collect(),
         night_mode: state.night_mode,
+        raw_signals: state.raw_signals.clone().into_iter().collect(),
     }
 }
 
@@ -106,6 +107,7 @@ mod tests {
                 enabled: Some(true),
             },
             night_mode: Some(true),
+            raw_signals: [("CGW1.CF_Gway_DrvDrSw".into(), 1.0)].into(),
             doors: vec![car::DoorState {
                 position: car::DoorPosition::RearRight,
                 open: Some(false),
@@ -130,6 +132,7 @@ mod tests {
         );
         assert_eq!(mapped.cruise.unwrap().enabled, Some(true));
         assert_eq!(mapped.night_mode, Some(true));
+        assert_eq!(mapped.raw_signals["CGW1.CF_Gway_DrvDrSw"], 1.0);
         assert_eq!(
             mapped.doors[0].position,
             sdk::DoorPosition::RearRight as i32

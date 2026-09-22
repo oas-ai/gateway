@@ -9,9 +9,9 @@ description = "Read-only OAS CAN gateway host pipeline"
 path = "src/lib.rs"
 
 [dependencies]
-oas-can = { git = "https://github.com/oas-ai/can.git", rev = "f6a7c432e7b1cccf098fa9ef9142eea314cd38a9" }
-oas-car = { git = "https://github.com/oas-ai/car.git", rev = "a4dd5ee45f60871f353f5c1cfbcdc5441bfa1cfb" }
-oas-sdk = { git = "https://github.com/oas-ai/sdk.git", rev = "a7e1777a3df0ba0a27d38f772db09771cb5724df" }
+oas-can = { git = "https://github.com/oas-ai/can.git", rev = "87dbf2e2ffc54b25cfade8f5f8b23b19456cfbb2" }
+oas-car = { git = "https://github.com/oas-ai/car.git", rev = "eb010ed5d4bd549ff3cc3ad46aef437ad0970829" }
+oas-sdk = { git = "https://github.com/oas-ai/sdk.git", rev = "5f536c640a15c1d4b31749a467fa9d86919c9d1b" }
 prost = "0.14.4"
 
 [target.'cfg(target_os = "linux")'.dependencies]
