@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: oas-ai/ohayessOS
-          ref: 6dd27071ba74b83399d9591c669a6ea2d49d15f5
+          ref: 3e6b33c5d558c8441e4c1220e663e170026a16b8
           path: ohayessOS
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
