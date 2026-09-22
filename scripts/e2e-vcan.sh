@@ -33,6 +33,7 @@ for _ in {1..20}; do
   cansend vcan0 4F1#00A00000
   cansend vcan0 2B0#8403000000
   cansend vcan0 394#000000007C440000
+  cansend vcan0 367#0000000000000000
   if grep -Eq 'speed_mps=Some\(22\.222.*acceleration_mps2=Some\(1\.25\).*steering_angle_rad=Some\(1\.570796.*brake_pressed=Some\(true\).*fresh=true' "$runtime_log"; then
     exit 0
   fi

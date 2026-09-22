@@ -46,6 +46,7 @@ send_frames() {
   cansend vcan0 2B0#8403000000
   cansend vcan0 394#000000007C440000
   cansend vcan0 541#0000008000000000
+  cansend vcan0 367#0000000000000000
 }
 
 send_frames_continuously() {

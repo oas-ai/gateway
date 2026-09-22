@@ -2,6 +2,7 @@ use oas_can::decode::DecodeContext;
 use oas_can::frame::{CanFrame, CanId};
 use oas_can::genesis_g80_legacy::GenesisG80LegacyDecoder;
 use oas_car::genesis_g80_legacy::GenesisG80LegacyAdapter;
+use oas_car::vehicle_state::GearPosition;
 use oas_gateway_host::Gateway;
 use oas_sdk::vehicle::v1::VehicleState;
 use prost::Message;
@@ -43,11 +44,26 @@ fn gateway_converts_g80_frames_to_canonical_state() {
         .unwrap()
         .unwrap();
     assert_eq!(state.night_mode, Some(true));
+
+    let state = gateway
+        .ingest(&frame(871, vec![0, 0, 0, 0, 0, 0, 0, 0]), context)
+        .unwrap()
+        .unwrap();
+    assert_eq!(state.gear.position, GearPosition::Park);
 }
 
 #[test]
 fn gateway_emits_the_sdk_vehicle_state_wire_contract() {
     let mut gateway = Gateway::new(GenesisG80LegacyDecoder, GenesisG80LegacyAdapter::default());
+    gateway
+        .ingest(
+            &frame(871, vec![0, 0, 0, 0, 0, 0, 0, 0]),
+            DecodeContext {
+                timestamp_ns: Some(1_000),
+                bus: 0,
+            },
+        )
+        .unwrap();
     let bytes = gateway
         .ingest_protobuf(
             &frame(1265, vec![0, 160, 0, 0]),
@@ -62,4 +78,5 @@ fn gateway_emits_the_sdk_vehicle_state_wire_contract() {
 
     assert_eq!(state.timestamp_ns, Some(1_000));
     assert!((state.vehicle_speed_mps.unwrap() - 80.0 / 3.6).abs() < 0.000_01);
+    assert_eq!(state.gear.unwrap().position, 1);
 }
