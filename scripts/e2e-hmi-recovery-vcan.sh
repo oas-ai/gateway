@@ -94,13 +94,15 @@ send_frames_continuously &
 frame_sender_pid=$!
 assert_hmi media '재생 조건: vehicle_in_motion'
 
-for route in home media vehicle settings diagnostics; do
+for route in home media workspace vehicle settings diagnostics; do
   assert_hmi "$route" "<section class=\"screen\" data-screen=\"$route\">"
 done
 assert_hmi media/library 'data-tab-panel="library" class="content-grid">'
 assert_hmi media/library 'data-tab-panel="player" class="dashboard-grid" hidden(="")?>'
 assert_hmi vehicle/vision 'data-tab-panel="vision" class="dashboard-grid">'
 assert_hmi settings/safety 'data-tab-panel="safety" class="settings-list">'
+assert_hmi settings/display 'data-theme-choice="auto"'
+assert_hmi workspace 'class="split-workspace"'
 assert_hmi diagnostics/logs 'data-tab-panel="logs" class="settings-list">'
 
 kill -TERM "$old_gateway_pid"
