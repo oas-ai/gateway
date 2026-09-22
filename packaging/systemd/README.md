@@ -19,3 +19,13 @@ sudo systemctl enable --now oas-gateway-runtime@can0.service
 `oas` user가 없으면 OS의 system-user 관리 절차로 만들고, `runtime.env`에서 bus·freshness·backoff·HMI loopback 주소를 조정한다. HMI는 기본으로 `127.0.0.1:8080`에서만 수신한다. 서비스는 `CAP_NET_RAW` 외 권한을 부여하지 않으며 CAN interface가 사라지면 함께 중지된다.
 
 배포 전 Linux에서 `cargo build --release -p oas-gateway-host`, `cargo build --release -p ohayess-runtime -p ohayess-hmi`, 그리고 HMI recovery E2E를 실행한다. 운영 로그 확인은 `journalctl -u oas-gateway-runtime@can0 -f`를 사용한다.
+
+설치·기동 뒤에는 service를 재시작하거나 CAN frame을 보내지 않는 사전점검을 실행한다.
+
+```sh
+sudo install -m 0755 scripts/preflight-linux.sh /usr/lib/oas-gateway/
+sudo OAS_CAN_BITRATE=500000 /usr/lib/oas-gateway/preflight-linux.sh can0
+```
+
+`OAS_CAN_BITRATE`는 대상 CAN bitrate와 일치시킨다. 이 점검은 interface UP/bitrate, systemd의
+`NoNewPrivileges`, service 활성 상태, loopback HMI의 `rawDiagnostics` 응답만 읽는다.
