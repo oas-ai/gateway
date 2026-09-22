@@ -37,6 +37,12 @@ fn gateway_converts_g80_frames_to_canonical_state() {
     assert!((state.acceleration_mps2.unwrap() - 1.25).abs() < 0.000_01);
     assert_eq!(state.brake.pressed, Some(true));
     assert!(state.is_fresh_at(1_050, 50));
+
+    let state = gateway
+        .ingest(&frame(1345, vec![0, 0, 0, 128, 0, 0, 0, 0]), context)
+        .unwrap()
+        .unwrap();
+    assert_eq!(state.night_mode, Some(true));
 }
 
 #[test]

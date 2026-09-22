@@ -45,6 +45,7 @@ send_frames() {
   cansend vcan0 4F1#00A00000
   cansend vcan0 2B0#8403000000
   cansend vcan0 394#000000007C440000
+  cansend vcan0 541#0000008000000000
 }
 
 send_frames_continuously() {
@@ -93,6 +94,7 @@ wait_for_speed
 send_frames_continuously &
 frame_sender_pid=$!
 assert_hmi media '재생 조건: vehicle_in_motion'
+assert_hmi media 'data-theme="dark"'
 
 for route in home media workspace vehicle settings diagnostics; do
   assert_hmi "$route" "<section class=\"screen\" data-screen=\"$route\">"

@@ -74,6 +74,7 @@ pub fn vehicle_state(state: &car::VehicleState) -> sdk::VehicleState {
                 latched: seatbelt.latched,
             })
             .collect(),
+        night_mode: state.night_mode,
     }
 }
 
@@ -104,6 +105,7 @@ mod tests {
             cruise: car::CruiseState {
                 enabled: Some(true),
             },
+            night_mode: Some(true),
             doors: vec![car::DoorState {
                 position: car::DoorPosition::RearRight,
                 open: Some(false),
@@ -127,6 +129,7 @@ mod tests {
             sdk::GearPosition::Drive as i32
         );
         assert_eq!(mapped.cruise.unwrap().enabled, Some(true));
+        assert_eq!(mapped.night_mode, Some(true));
         assert_eq!(
             mapped.doors[0].position,
             sdk::DoorPosition::RearRight as i32

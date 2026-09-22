@@ -342,12 +342,12 @@ dependencies = [
 [[package]]
 name = "oas-can"
 version = "0.1.0"
-source = "git+https://github.com/oas-ai/can.git?rev=0de3e86d5ade1d68b035cb2f6eb19141c68ccdac#0de3e86d5ade1d68b035cb2f6eb19141c68ccdac"
+source = "git+https://github.com/oas-ai/can.git?rev=819dcda4304d5641d0576069ec38886d56ef22e5#819dcda4304d5641d0576069ec38886d56ef22e5"
 
 [[package]]
 name = "oas-car"
 version = "0.1.0"
-source = "git+https://github.com/oas-ai/car.git?rev=c10fe0271d99bb99b21f7611982c814e77e16888#c10fe0271d99bb99b21f7611982c814e77e16888"
+source = "git+https://github.com/oas-ai/car.git?rev=aa8cc5218575f6d4e019d2b09e5e8695ee8016c8#aa8cc5218575f6d4e019d2b09e5e8695ee8016c8"
 dependencies = [
  "oas-can",
 ]
@@ -367,7 +367,7 @@ dependencies = [
 [[package]]
 name = "oas-sdk"
 version = "0.1.0"
-source = "git+https://github.com/oas-ai/sdk.git?rev=1798c5efab35231b93fef0f4c3e69af962e89201#1798c5efab35231b93fef0f4c3e69af962e89201"
+source = "git+https://github.com/oas-ai/sdk.git?rev=a7e1777a3df0ba0a27d38f772db09771cb5724df#a7e1777a3df0ba0a27d38f772db09771cb5724df"
 dependencies = [
  "prost",
  "prost-build",
