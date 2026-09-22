@@ -347,7 +347,7 @@ source = "git+https://github.com/oas-ai/can.git?rev=6f711479e2814e61d388a50d7e63
 [[package]]
 name = "oas-car"
 version = "0.1.0"
-source = "git+https://github.com/oas-ai/car.git?rev=d3548c3e856b58a7f15ed443010ac832a47b4d86#d3548c3e856b58a7f15ed443010ac832a47b4d86"
+source = "git+https://github.com/oas-ai/car.git?rev=335fdd1346c03765fad5cf8b250f9ed6b7569cf2#335fdd1346c03765fad5cf8b250f9ed6b7569cf2"
 dependencies = [
  "oas-can",
 ]

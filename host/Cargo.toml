@@ -10,7 +10,7 @@ path = "src/lib.rs"
 
 [dependencies]
 oas-can = { git = "https://github.com/oas-ai/can.git", rev = "6f711479e2814e61d388a50d7e6331807b7453cf" }
-oas-car = { git = "https://github.com/oas-ai/car.git", rev = "d3548c3e856b58a7f15ed443010ac832a47b4d86" }
+oas-car = { git = "https://github.com/oas-ai/car.git", rev = "335fdd1346c03765fad5cf8b250f9ed6b7569cf2" }
 oas-sdk = { git = "https://github.com/oas-ai/sdk.git", rev = "5f536c640a15c1d4b31749a467fa9d86919c9d1b" }
 prost = "0.14.4"
 
