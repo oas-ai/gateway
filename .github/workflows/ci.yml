@@ -38,5 +38,6 @@ jobs:
       - run: cargo build --manifest-path ohayessOS/Cargo.toml -p ohayess-runtime -p ohayess-viewer
       - run: ./scripts/e2e-vcan.sh target/debug/ohayess-runtime
       - run: ./scripts/e2e-recovery-vcan.sh target/debug/ohayess-runtime
+      - run: ./scripts/e2e-hmi-state-vcan.sh target/debug/ohayess-runtime target/debug/hmi_state_probe
       - run: google-chrome --version
       - run: ./scripts/e2e-viewer-recovery-vcan.sh target/debug/ohayess-runtime target/debug/ohayess-viewer
