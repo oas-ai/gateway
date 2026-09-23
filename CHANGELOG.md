@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Verify Palisade synthetic vCAN frames through Runtime into a rendered Qt HMI screenshot in CI.
+
 - Add a read-only Linux deployment preflight for SocketCAN, systemd, and HMI diagnostics.
 - Add a shared synthetic Palisade DBC fixture and assert raw diagnostics in the vCAN-to-HMI E2E path.
 - Forward DBC-trusted Palisade raw body, door, seatbelt, and climate diagnostics to the SDK state stream.

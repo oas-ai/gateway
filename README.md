@@ -19,4 +19,6 @@ Linux SocketCAN smoke test는 `vcan0`을 생성한 뒤 `cargo test --test socket
 
 `scripts/run-gateway-runtime.sh`는 gateway 종료 뒤 runtime을 새 stdout stream에 자동 재연결합니다. `OAS_VIEWER_BIN`을 설정하면 같은 snapshot을 runtime과 loopback Viewer에 fan-out합니다. restart backoff는 1초에서 시작해 최대 5초이며, `./scripts/e2e-recovery-vcan.sh <ohayess-runtime 경로>`와 `./scripts/e2e-viewer-recovery-vcan.sh <ohayess-runtime 경로> <ohayess-viewer 경로>`가 gateway 종료·재시작 뒤 상태 수신, Viewer route·tab 렌더링, 주행 중 미디어 잠금 및 `nightMode` 기반 다크 전환을 검증합니다. 제품 Qt/QML HMI는 별도 platform bridge를 통해 stream을 받으며 이 개발용 fan-out에 포함하지 않습니다.
 
+`OAS_HMI_STREAM`을 설정하면 Runtime이 생성한 `HmiState`가 해당 FIFO로 전달됩니다. Qt HMI에는 raw `VehicleState`를 직접 보내지 않습니다. `bash scripts/e2e-qt-hmi-vcan.sh <runtime> <ohayess-hmi>`는 합성 프레임을 **vcan0에만** 주입하고 실제 Qt HMI가 80 km/h 상태를 수신해 화면을 렌더링하는지 검사합니다. PNG는 CI의 `vcan-qt-hmi` artifact로 보존됩니다. 제품 Gateway는 CAN 송신을 지원하지 않습니다.
+
 실차 Linux 배포용 systemd template과 설치 절차는 [packaging/systemd/](packaging/systemd/README.md)에 있습니다. 이 서비스는 `oas-gateway-runtime@can0`처럼 CAN interface별로 실행하며 read-only SocketCAN 수신에 필요한 `CAP_NET_RAW`만 부여합니다.
